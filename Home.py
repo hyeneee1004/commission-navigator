@@ -1,0 +1,95 @@
+# -*- coding: utf-8 -*-
+from datetime import date
+
+import streamlit as st
+
+import ui
+from portal_data import COST_MATRIX
+
+st.set_page_config(page_title="수수료 내비게이터", page_icon="🧭", layout="wide",
+                   initial_sidebar_state="collapsed")
+ui.inject()
+ui.tabbar("index")
+ui.page_head("수수료 내비게이터",
+             "2026 판매수수료 개편 — 어렵게 읽을 필요 없이, 딱 3가지만 기억하세요.<br>"
+             "1·2차 FAQ 반영 완료 / <b>3차 FAQ(분급)는 '26.8월 이후 — 분급 수치는 잠정</b>",
+             mood="hello", say="안녕하세요! 바뀌는 수수료 제도, 제가 쉽게 알려드릴게요 🙌")
+
+# ── ① 핵심 3가지 ──
+st.markdown("### ① 딱 3가지만 기억하세요")
+c1, c2, c3 = st.columns(3, gap="medium")
+with c1:
+    ui.p_card("pc-peach", "26년 3월부터 · 시행 중", "3년 안에 깨지면, 받은 돈 도로 냅니다",
+              "수수료+해약환급금이 고객 납입보험료보다 크면 <b>차익거래</b> → 환수. "
+              "실효(미납)도 포함돼요.", "감독규정 제4-32조 제6항")
+with c2:
+    ui.p_card("pc-lavender", "26년 7월부터 · 시행 중", "첫해 받을 수 있는 돈 = 1년치 보험료까지",
+              "<b>1,200% 룰</b>. 계약 1건 단위로 따지고, 지점 운영비·시상금까지 전부 포함됩니다.",
+              "감독규정 제4-32조 제5항")
+with c3:
+    ui.p_card("pc-sky", "27년 1월부터 · 예정", "한 번에 받던 수수료, 4~7년 나눠 받습니다",
+              "<b>분급 제도</b>. 첫해 수령액은 줄지만, 계약이 오래 유지되면 총액은 더 많아져요.",
+              "감독규정 제4-32조 제11~13항")
+
+# ── ② 시행 일정 ──
+st.write("")
+d1 = (date(2027, 1, 1) - date.today()).days
+d2 = (date(2029, 1, 1) - date.today()).days
+st.markdown(f"### ② 언제부터 바뀌나요 — 4년 분급까지 <span style='color:#C08A00'>D-{d1}</span>",
+            unsafe_allow_html=True)
+s1, s2, s3, s4 = st.columns(4, gap="small")
+with s1:
+    ui.step("pc-sky", "26.3 ✓", "차익거래 금지<br>비교공시 시작", "TM채널은 27.1부터")
+with s2:
+    ui.step("pc-lavender", "26.7 ✓", "1,200% 룰<br>비교설명의무", "TM채널도 동일")
+with s3:
+    ui.step("pc-lemon", f"27.1 · D-{d1}", "선지급 한도<br>4년 분급 시작", "TM채널은 28.1부터")
+with s4:
+    ui.step("pc-peach", f"29.1 · D-{d2}", "7년 분급<br>장기유지수수료", "TM채널은 30.1부터")
+
+# ── ③ 바로가기 ──
+st.write("")
+st.markdown("### ③ 지금 확인해 보세요")
+g1, g2, g3 = st.columns(3, gap="medium")
+with g1:
+    ui.p_card("pc-peach", "계약 진단", "이 계약, 해지되면 환수될까?",
+              "상품·계약일만 넣으면 예상 환급금과 <b>환수 위험 구간</b>을 진단해요.")
+    g1.page_link("pages/3_차익거래_체크.py", label="🩺 계약 진단 하러 가기", use_container_width=True)
+with g2:
+    ui.p_card("pc-mint", "소득 계산", "내 소득, 개편 후 얼마나 달라질까?",
+              "실제 수수료 규정 기준으로 <b>'27년·'29년 첫해 소득</b>과 필요 실적을 계산해요.")
+    g2.page_link("pages/2_소득_시뮬레이터.py", label="💰 소득 계산 하러 가기", use_container_width=True)
+with g3:
+    ui.p_card("pc-lavender", "규정 찾기", "궁금한 규정, 한 줄로 확인",
+              "먹튀·천이백·가불… 평소 쓰는 말로 검색하면 <b>원문까지</b> 찾아줘요.")
+    g3.page_link("pages/1_규제_검색.py", label="🔎 규정 찾기 하러 가기", use_container_width=True)
+
+
+# ── ④ 판정표 ──
+@st.dialog("비용 분류 판정표 — 뭐가 포함되고 뭐가 빠지나", width="large")
+def show_matrix():
+    st.caption("출처: GA비용분류 및 처리기준. '포함'이면 1,200% 한도에 합산되는 비용입니다.")
+
+    def _color(v):
+        if v in ("포함", "합산"):
+            return "background-color:#FBE9E9;color:#CE3B3B;font-weight:800"
+        if v in ("제외", "예외"):
+            return "background-color:#E2F6EE;color:#17A673;font-weight:800"
+        if v == "조건부":
+            return "background-color:#FCF2D4;color:#C08A00;font-weight:800"
+        return ""
+
+    st.dataframe(COST_MATRIX.style.map(_color, subset=["수수료등", "1,200%", "차익거래"]),
+                 use_container_width=True, hide_index=True, height=420)
+
+
+st.write("")
+ui.tip("지점 운영비·시상·교육비… 어떤 게 1,200% 한도를 갉아먹는지 헷갈리면 <b>판정표</b>를 열어보세요!")
+bc1, _ = st.columns([1.3, 2.7])
+if bc1.button("📋 비용 분류 판정표 열기", type="primary", use_container_width=True):
+    show_matrix()
+
+st.divider()
+st.caption("근거: 금융위·금감원 1차 FAQ(2026.2)·개정 전후비교 · GA 실무 대응 가이드 · 제5차 GA업권 수수료TF 결과보고 · "
+           "생보협회 이행 참고자료(26.4.14) · GA비용분류 및 처리기준 · 개편안 현황 정리. "
+           "본 화면은 내부 안내용이며 법적 근거가 될 수 없습니다.")

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/참고자료/*
+data/수수료규정/*
+data/환급률표/*
+!data/**/.gitkeep
