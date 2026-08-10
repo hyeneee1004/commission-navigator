@@ -51,7 +51,7 @@ for row_start in range(0, len(hits), 2):
         with col:
             ui.p_card(THEMES[n % len(THEMES)], f"규정 {n + 1:02d}", c["title"], c["summary"],
                       c["art"].split("·")[0].strip())
-            if st.button("자세히 보기 →", key=f"d_{c['title']}"):
+            if st.button("자세히 보기 →", key=f"d_{c['title']}", type="primary"):
                 detail(c)
     st.write("")
 

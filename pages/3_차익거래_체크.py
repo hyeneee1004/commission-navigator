@@ -211,7 +211,7 @@ with right:
         st.caption("판정 산식: 수수료등 + 해약환급금 − 환수금 > 납입보험료 (개정 FAQ Q11 · 제5차 TF 확정)")
 
     b1, _ = st.columns([1.3, 1.7])
-    if b1.button("📄 연별환급예시 (36개월 전체)", use_container_width=True):
+    if b1.button("📄 연별환급예시 (36개월 전체)", type="primary", use_container_width=True):
         show_table()
 
 st.caption("⑥ 본 화면은 보험사 제공 예상 해약환급률표 기준의 예시 산출로 실제 환급금과 다를 수 있으며, "

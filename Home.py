@@ -126,5 +126,4 @@ if bc1.button("📋 비용 분류 판정표 열기", type="primary", use_contain
     show_matrix()
 
 st.divider()
-st.caption("근거: 금융위·금감원 FAQ 및 개편 관련 배포자료 종합. 분급 세부 수치는 3차 FAQ 확정 전 잠정. "
-           "본 화면은 내부 안내용이며 법적 근거가 될 수 없습니다.")
+st.caption("근거: 금융위·금감원 FAQ 및 개편 관련 배포자료 종합. 본 화면은 안내용이며 법적 근거가 될 수 없습니다.")

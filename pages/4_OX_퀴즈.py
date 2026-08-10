@@ -49,7 +49,8 @@ if answered == len(QUIZ):
         ui.speak("sad", "환수 위험이 있어요! 해설을 읽고 [규정 찾기]에서 복습해요.",
                  tone="bb-warn", big=f"📚 점수 {correct} / {len(QUIZ)}")
     lb1, lb2 = st.columns(2)
-    lb1.page_link("pages/1_규제_검색.py", label="🔎 규정 찾기에서 복습하기", use_container_width=True)
+    if lb1.button("🔎 규정 찾기에서 복습하기", type="primary", use_container_width=True):
+        st.switch_page("pages/1_규제_검색.py")
     if lb2.button("다시 풀기", use_container_width=True):
         st.session_state.quiz_ans = {}
         st.rerun()

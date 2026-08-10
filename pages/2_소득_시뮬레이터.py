@@ -13,8 +13,7 @@ st.set_page_config(page_title="소득 계산 — 수수료 내비게이터", pag
 ui.inject()
 ui.tabbar("sim")
 ui.page_head("💰 내 소득, 얼마나 달라지나",
-             "실제 수수료 규정 기준으로 '27년(4년 분급)·'29년(7년 분급) 첫해 소득과 필요 실적을 계산합니다.<br>"
-             "계약체결비용·선지급률은 <b>3차 FAQ 확정 전 잠정치</b>예요.",
+             "실제 수수료 규정 기준으로 '27년(4년 분급)·'29년(7년 분급) 첫해 소득과 필요 실적을 계산합니다.",
              mood="think", say="숫자만 넣으면 제가 바로 계산해 드릴게요!")
 
 st.write("")
@@ -149,10 +148,9 @@ with right:
 4년 분급 월액    = MIN(C × 1.5%, C × 90% / 48)
 7년 분급 월액    = MIN(C × 0.8%, C × 100% / 84) , 장기유지(61~84차월) = C × 0.4%""",
             language="text")
-        st.caption("계약체결비용·선지급률은 보험사·상품별 값. 3차 FAQ('26.8월~) 확정 전 잠정치입니다.")
 
     b1, _ = st.columns([1.3, 1.7])
-    if b1.button("📄 상세 계산표·산식 보기", use_container_width=True):
+    if b1.button("📄 상세 계산표·산식 보기", type="primary", use_container_width=True):
         show_detail()
 
 # ──────────────── ④ 대응 가이드 (결과 맞춤) ────────────────

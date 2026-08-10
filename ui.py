@@ -146,8 +146,10 @@ h1,h2,h3 { color:#152238; letter-spacing:-0.02em; font-weight:800 !important; }
 
 /* ── 위젯 교정 ── */
 div.stButton > button { border-radius:10px; font-weight:800; font-size:1.0rem;
-  border:1px solid #C4D0E0; color:#2456A6; background:#FFFFFF; padding:.65rem 1.1rem; }
-div.stButton > button:hover { background:#EEF2F7; border-color:#2456A6; }
+  border:1.5px solid #9FB4D6; color:#1B3A6B; background:#E8EDF4; padding:.65rem 1.1rem;
+  box-shadow:0 2px 4px rgba(21,34,56,.12); }
+div.stButton > button:hover { background:#D5E0F0; border-color:#2456A6; }
+div.stButton > button:active { transform:translateY(1px); box-shadow:none; }
 div.stButton > button[kind="primary"] { background:#2456A6; color:#fff; border-color:#2456A6; }
 div.stButton > button[kind="primary"]:hover { background:#1A419E; }
 [data-testid="stPageLink-NavLink"] { border:1px solid #C4D0E0; border-radius:10px;
