@@ -11,8 +11,7 @@ st.set_page_config(page_title="수수료 내비게이터", page_icon="🧭", lay
 ui.inject()
 ui.tabbar("index")
 ui.page_head("수수료 내비게이터",
-             "2026 판매수수료 개편 — 어렵게 읽을 필요 없이, 딱 3가지만 기억하세요.<br>"
-             "1·2차 FAQ 반영 완료 / <b>3차 FAQ(분급)는 '26.8월 이후 — 분급 수치는 잠정</b>",
+             "2026 판매수수료 개편 — 어렵게 읽을 필요 없이, 딱 3가지만 기억하세요.",
              mood="hello", say="안녕하세요! 바뀌는 수수료 제도, 제가 쉽게 알려드릴게요 🙌")
 
 # ── ① 핵심 3가지 ──
@@ -31,21 +30,55 @@ with c3:
               "<b>분급 제도</b>. 첫해 수령액은 줄지만, 계약이 오래 유지되면 총액은 더 많아져요.",
               "감독규정 제4-32조 제11~13항")
 
-# ── ② 시행 일정 ──
+# ── ② 개편 타임라인 (오늘 위치 표시) ──
 st.write("")
-d1 = (date(2027, 1, 1) - date.today()).days
-d2 = (date(2029, 1, 1) - date.today()).days
-st.markdown(f"### ② 언제부터 바뀌나요 — 4년 분급까지 <span style='color:#C08A00'>D-{d1}</span>",
+TL_START, TL_END = date(2026, 3, 1), date(2029, 1, 1)
+today = date.today()
+pct = max(0.0, min(100.0, (today - TL_START).days / (TL_END - TL_START).days * 100))
+MILES = [
+    (date(2026, 3, 1), "차익거래 금지", "비교공시 시작"),
+    (date(2026, 7, 1), "1,200% 룰", "비교설명의무"),
+    (date(2027, 1, 1), "4년 분급", "선지급 한도"),
+    (date(2029, 1, 1), "7년 분급", "장기유지수수료"),
+]
+d_next = next(((m[0] - today).days, m[1]) for m in MILES if m[0] > today)
+st.markdown(f"### ② 지금 어디까지 왔나 — 다음 변화 「{d_next[1]}」까지 "
+            f"<span style='color:#CE3B3B;font-size:1.4rem'>D-{d_next[0]}</span>",
             unsafe_allow_html=True)
-s1, s2, s3, s4 = st.columns(4, gap="small")
-with s1:
-    ui.step("pc-sky", "26.3 ✓", "차익거래 금지<br>비교공시 시작", "TM채널은 27.1부터")
-with s2:
-    ui.step("pc-lavender", "26.7 ✓", "1,200% 룰<br>비교설명의무", "TM채널도 동일")
-with s3:
-    ui.step("pc-lemon", f"27.1 · D-{d1}", "선지급 한도<br>4년 분급 시작", "TM채널은 28.1부터")
-with s4:
-    ui.step("pc-peach", f"29.1 · D-{d2}", "7년 분급<br>장기유지수수료", "TM채널은 30.1부터")
+
+nodes = ""
+for md, title, sub in MILES:
+    p = max(0.0, min(100.0, (md - TL_START).days / (TL_END - TL_START).days * 100))
+    passed = md <= today
+    dot = ("background:#17A673;border:3px solid #17A673;color:#fff;" if passed
+           else "background:#FFFFFF;border:3px solid #2456A6;color:#2456A6;")
+    badge = ('<span style="color:#17A673;font-weight:800;font-size:.85rem">✓ 시행 중</span>' if passed
+             else f'<span style="color:#CE3B3B;font-weight:800;font-size:.85rem">D-{(md - today).days}</span>')
+    nodes += (
+        f'<div style="position:absolute;left:{p}%;top:26px;transform:translateX(-50%);text-align:center;width:150px">'
+        f'<div style="width:22px;height:22px;border-radius:50%;{dot}margin:0 auto;'
+        f'display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800">'
+        f'{"✓" if passed else ""}</div>'
+        f'<div style="font-size:1.05rem;font-weight:800;color:#152238;margin-top:8px">{md.year % 100}.{md.month}</div>'
+        f'<div style="font-size:.9rem;font-weight:700;color:#3D4C66">{title}</div>'
+        f'<div style="font-size:.8rem;color:#7183A0">{sub}</div>{badge}</div>')
+
+st.markdown(f"""
+<div style="position:relative;height:170px;margin:26px 48px 6px">
+  <div style="position:absolute;top:34px;left:0;right:0;height:8px;background:#E3E9F1;border-radius:4px"></div>
+  <div style="position:absolute;top:34px;left:0;width:{pct}%;height:8px;
+       background:linear-gradient(90deg,#17A673,#2456A6);border-radius:4px"></div>
+  <div style="position:absolute;left:{pct}%;top:-8px;transform:translateX(-50%);text-align:center;z-index:2">
+    <div style="background:#C08A00;color:#fff;font-weight:800;font-size:.82rem;
+         border-radius:99px;padding:2px 12px;white-space:nowrap">📍 오늘 {today.year % 100}.{today.month}.{today.day}</div>
+    <div style="width:3px;height:30px;background:#C08A00;margin:2px auto 0"></div>
+  </div>
+  {nodes}
+</div>
+<div style="text-align:center;color:#4A6FA5;font-weight:700;font-size:.95rem;margin-bottom:4px">
+  개편 여정의 <span style="color:#C08A00;font-size:1.15rem;font-weight:800">{pct:.0f}%</span> 지점을 지나고 있어요
+</div>
+""", unsafe_allow_html=True)
 
 # ── ③ 바로가기 ──
 st.write("")
@@ -54,15 +87,18 @@ g1, g2, g3 = st.columns(3, gap="medium")
 with g1:
     ui.p_card("pc-peach", "계약 진단", "이 계약, 해지되면 환수될까?",
               "상품·계약일만 넣으면 예상 환급금과 <b>환수 위험 구간</b>을 진단해요.")
-    g1.page_link("pages/3_차익거래_체크.py", label="🩺 계약 진단 하러 가기", use_container_width=True)
+    if st.button("🩺 계약 진단 하러 가기", type="primary", use_container_width=True):
+        st.switch_page("pages/3_차익거래_체크.py")
 with g2:
     ui.p_card("pc-mint", "소득 계산", "내 소득, 개편 후 얼마나 달라질까?",
               "실제 수수료 규정 기준으로 <b>'27년·'29년 첫해 소득</b>과 필요 실적을 계산해요.")
-    g2.page_link("pages/2_소득_시뮬레이터.py", label="💰 소득 계산 하러 가기", use_container_width=True)
+    if st.button("💰 소득 계산 하러 가기", type="primary", use_container_width=True):
+        st.switch_page("pages/2_소득_시뮬레이터.py")
 with g3:
     ui.p_card("pc-lavender", "규정 찾기", "궁금한 규정, 한 줄로 확인",
               "먹튀·천이백·가불… 평소 쓰는 말로 검색하면 <b>원문까지</b> 찾아줘요.")
-    g3.page_link("pages/1_규제_검색.py", label="🔎 규정 찾기 하러 가기", use_container_width=True)
+    if st.button("🔎 규정 찾기 하러 가기", type="primary", use_container_width=True):
+        st.switch_page("pages/1_규제_검색.py")
 
 
 # ── ④ 판정표 ──
@@ -90,6 +126,5 @@ if bc1.button("📋 비용 분류 판정표 열기", type="primary", use_contain
     show_matrix()
 
 st.divider()
-st.caption("근거: 금융위·금감원 1차 FAQ(2026.2)·개정 전후비교 · GA 실무 대응 가이드 · 제5차 GA업권 수수료TF 결과보고 · "
-           "생보협회 이행 참고자료(26.4.14) · GA비용분류 및 처리기준 · 개편안 현황 정리. "
+st.caption("근거: 금융위·금감원 FAQ 및 개편 관련 배포자료 종합. 분급 세부 수치는 3차 FAQ 확정 전 잠정. "
            "본 화면은 내부 안내용이며 법적 근거가 될 수 없습니다.")

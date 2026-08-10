@@ -18,7 +18,7 @@ if "query" not in st.session_state:
 st.write("")
 st.markdown("**① 빠른 검색** — 버튼을 누르거나 검색어를 입력하세요")
 chip_cols = st.columns(8)
-for col, kw in zip(chip_cols, ["차익거래", "1200", "신인", "분급", "환수", "대여금", "TM", "지사"]):
+for col, kw in zip(chip_cols, ["차익거래", "1200", "신인", "분급", "환수", "대여금", "지사", "환급률표"]):
     if col.button(kw, use_container_width=True, key=f"chip_{kw}"):
         st.session_state.query = kw
 
