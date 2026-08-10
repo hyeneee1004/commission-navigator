@@ -43,9 +43,9 @@ with left:
             sub = sub[sub["보험사"] == comp]
             prod = st.selectbox("상품군", list(sub["상품군"]))
             row = sub[sub["상품군"] == prod].iloc[0]
-            conv = st.number_input("환산율 (%)", 10, 100, 100, 5,
-                                   help="규정 지급률은 '환산월초' 기준. 보장성은 대개 100%, "
-                                        "연금·저축·변액은 회사별 환산율 입력.") / 100
+            conv = st.number_input("환산율 (%)", 10, 300, 100, 5,
+                                   help="규정 지급률은 '환산월초' 기준. 회사별 환산율을 입력하세요. "
+                                        "100% 초과 환산(예: 120%)도 입력 가능합니다.") / 100
             T0 = float(row["총계"]) * conv
             R1 = float(row["첫해비중"])
             first_pay = float(row["첫해지급"]) * conv
@@ -155,23 +155,43 @@ with right:
     if b1.button("📄 상세 계산표·산식 보기", use_container_width=True):
         show_detail()
 
-# ──────────────── ④ 대응 가이드 ────────────────
+# ──────────────── ④ 대응 가이드 (결과 맞춤) ────────────────
 st.write("")
 st.markdown("### ④ 나는 어떻게 대응하면 될까")
 tot7, totc = res["'29.1 (7년 분급)"][1], res["현행"][1]
-g1, g2, g3 = st.columns(3, gap="medium")
-with g1:
-    ui.p_card("pc-sky", "소득 유지형", f"평소 실적의 {k4:.1f}~{k7:.1f}배를 목표로",
-              "당장 이번 달 소득을 예전처럼 유지하고 싶다면, 위 필요배수만큼 신계약 목표를 올리세요. "
-              "상품·선지급률에 따라 1.4~2.0배 범위입니다.")
-with g2:
-    body = (f"완납 유지 시 계약 1건당 <b>{totc:,.0f}만원 → {tot7:,.0f}만원</b>. "
-            if tot7 > totc else
-            "개편 후 총액은 계약체결비용·선지급률·시상 반영 방식에 따라 달라져요. ")
-    ui.p_card("pc-mint", "장기 축적형", "무리한 증건보다 36개월 유지",
-              body + "초기 소득은 줄지만 1년 뒤부터 분할 수수료가 바닥을 받쳐줍니다. "
-              "핵심은 <b>'더 오래 유지되는 계약'</b>.")
-with g3:
-    ui.p_card("pc-lavender", "신인 특례 활용", "직전 3년 무경력이면 지원비 별도",
-              "신인활동지원비(등록 1년 내)는 1,200%·차익거래 계산에서 <b>제외</b>되고 환수 대상도 아니에요. "
-              "모집경력조회시스템으로 사전 확인 필수. 단, 13차월 이후 지급분은 포함.")
+
+# 손익분기 차월: 계약 1건 기준, 분급 누적 수령액이 현행 첫해 수령액을 따라잡는 시점
+C_amt = P * C_pct / 100.0
+S_amt = min(P * S_pct / 100.0, C_amt)
+m4_amt = min(C_amt * 0.015, C_amt * 0.90 / 48)
+t4 = (cur1 - S_amt) / m4_amt if m4_amt > 0 else 999
+if t4 <= 0:
+    be_txt = "이 조건에서는 선지급만으로 이미 현행 첫해 수령액 이상이에요."
+elif t4 <= 48:
+    be_txt = f"계약 1건 기준, 분급 누적 수령액이 현행 첫해 수령액을 <b>약 {t4:.0f}차월</b>에 따라잡아요."
+else:
+    be_txt = "이 가정에서는 4년(48개월) 분급만으로 현행 첫해 수령액을 다 못 따라잡아요. 유지와 증건을 병행해야 해요."
+
+reco_keep = drop4 >= 30          # 감소폭 크면 '소득 유지형', 아니면 '장기 축적형' 추천
+cards = [
+    dict(theme="pc-sky", tag="소득 유지형",
+         head=f"평소 실적의 {k4:.1f}~{k7:.1f}배를 목표로",
+         body=f"지금 월 {N:g}건 → '27년 <b>월 {N * k4:.1f}건 (+{N * (k4 - 1):.1f}건)</b>, "
+              f"'29년 월 {N * k7:.1f}건. 당장 이번 달 소득을 지키는 가장 직접적인 방법이에요.",
+         badge=reco_keep),
+    dict(theme="pc-mint", tag="장기 축적형",
+         head="무리한 증건보다 오래 유지",
+         body=(f"완납 유지 시 계약 1건당 <b>{totc:,.0f}만원 → {tot7:,.0f}만원</b>. " if tot7 > totc else "")
+              + be_txt + " 핵심은 <b>'더 오래 유지되는 계약'</b>이에요.",
+         badge=not reco_keep),
+    dict(theme="pc-lavender", tag="신인 특례 참고",
+         head="직전 3년 무경력이면 지원비 별도",
+         body="신인활동지원비(등록 1년 내)는 1,200%·차익거래 계산에서 <b>제외</b>되고 환수 대상도 아니에요. "
+              "모집경력조회시스템으로 사전 확인 필수. 단, 13차월 이후 지급분은 포함.",
+         badge=False),
+]
+cards.sort(key=lambda c: not c["badge"])     # 추천 카드를 맨 앞으로
+gcols = st.columns(3, gap="medium")
+for col, cd in zip(gcols, cards):
+    with col:
+        ui.p_card(cd["theme"], cd["tag"], cd["head"], cd["body"], badge=cd["badge"])

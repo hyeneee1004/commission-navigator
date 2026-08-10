@@ -214,10 +214,14 @@ def tip(text: str):
         unsafe_allow_html=True)
 
 
-def p_card(theme: str, tag: str, head: str, body: str, art: str = ""):
+def p_card(theme: str, tag: str, head: str, body: str, art: str = "", badge: bool = False):
     art_html = f'<span class="art">{art}</span>' if art else ""
+    b_html = ('<span style="position:absolute;top:-13px;right:14px;background:#C08A00;color:#fff;'
+              'font-size:.78rem;font-weight:800;border-radius:99px;padding:3px 13px">🌟 내게 맞는 전략</span>'
+              ) if badge else ""
+    extra = "position:relative;border:2px solid var(--pt);" if badge else "position:relative;"
     st.markdown(
-        f'<div class="p-card {theme}"><span class="tag">{tag}</span>'
+        f'<div class="p-card {theme}" style="{extra}">{b_html}<span class="tag">{tag}</span>'
         f'<p class="h">{head}</p><p class="b">{body}</p>{art_html}</div>', unsafe_allow_html=True)
 
 
