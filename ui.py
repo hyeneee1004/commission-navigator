@@ -31,12 +31,13 @@ MOOD_FALLBACK = {"hello": "🐥", "warn": "🚨", "safe": "😊", "think": "🤔
                  "happy": "🎉", "sad": "😢", "tip": "💡"}
 
 BLUE = "#3D6BFF"
+# (key, label, url, icon) — 하단 내비 순서: 홈 가운데
 PAGES = [
-    ("index", "홈", "/", BLUE),
-    ("search", "규정 찾기", "/규제_검색", BLUE),
-    ("sim", "소득 계산", "/소득_시뮬레이터", BLUE),
-    ("risk", "계약 진단", "/차익거래_체크", BLUE),
-    ("quiz", "OX 퀴즈", "/OX_퀴즈", BLUE),
+    ("search", "규정 찾기", "/규제_검색", "🔎"),
+    ("sim", "소득 계산", "/소득_시뮬레이터", "💰"),
+    ("index", "홈", "/", "🏠"),
+    ("risk", "계약 진단", "/차익거래_체크", "🩺"),
+    ("quiz", "OX 퀴즈", "/OX_퀴즈", "✏️"),
 ]
 
 CSS = """
@@ -46,23 +47,34 @@ CSS = """
 [data-testid="stHeader"] { background:transparent; }
 [data-testid="stAppViewContainer"] {
   background:linear-gradient(180deg,#E9F0FF 0%,#F3F6FC 260px,#F3F6FC 100%); }
-.block-container { background:transparent; padding:1.6rem 2.6rem 3rem !important;
+.block-container { background:transparent; padding:1.2rem 2.6rem 7rem !important;
   max-width:1150px; }
 html, body, [data-testid="stAppViewContainer"] { font-size:16.5px; color:#26324A; }
 h1,h2 { color:#26324A; letter-spacing:-0.02em; font-weight:800 !important; }
 h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-size:1.18rem !important; }
 
-/* ── 알약 탭 ── */
-.tabbar { display:flex; gap:8px; align-items:center; padding:4px 2px 18px; margin:0 auto;
-  max-width:1150px; overflow-x:auto; }
-.tabbar .idx { display:none; }
-.tabbar a { white-space:nowrap; text-decoration:none; font-weight:700; font-size:.95rem;
-  padding:9px 22px; border-radius:999px;
-  background:#FFFFFF; color:#6E7A94; border:1px solid #E6ECF7;
-  box-shadow:0 2px 8px rgba(61,107,255,.07); }
-.tabbar a:hover { color:#3D6BFF; border-color:#C5D4FF; }
-.tabbar a.on { background:#3D6BFF; color:#FFFFFF; border-color:#3D6BFF; font-weight:800;
-  box-shadow:0 6px 16px rgba(61,107,255,.35); }
+/* ── 상단 브랜드 헤더 ── */
+.brand { display:flex; align-items:center; gap:12px; padding:12px 4px 14px;
+  max-width:1150px; margin:0 auto; }
+.brand img { height:42px; }
+.brand .logo-txt { font-style:italic; font-weight:900; font-size:1.7rem; color:#1F3480;
+  letter-spacing:-0.05em; line-height:1; }
+.brand .nm { font-weight:800; font-size:1.0rem; color:#1F3480; line-height:1.25; }
+.brand .sl { font-size:.75rem; color:#6E7A94; font-weight:600; line-height:1.2; }
+
+/* ── 하단 고정 내비게이션 ── */
+.bottomnav { position:fixed; bottom:0; left:0; right:0; z-index:9999;
+  background:#FFFFFF; border-top:1px solid #E6ECF7;
+  box-shadow:0 -6px 20px rgba(61,107,255,.10);
+  display:flex; justify-content:center; gap:6px;
+  padding:8px 8px calc(10px + env(safe-area-inset-bottom)); }
+.bottomnav a { text-decoration:none; display:flex; flex-direction:column; align-items:center;
+  gap:3px; color:#9AA5B8; font-size:.74rem; font-weight:700;
+  min-width:74px; padding:4px 10px; border-radius:14px; }
+.bottomnav a .ic { font-size:1.35rem; line-height:1; filter:grayscale(1) opacity(.5); }
+.bottomnav a:hover { color:#3D6BFF; background:#F3F7FF; }
+.bottomnav a.on { color:#3D6BFF; font-weight:800; }
+.bottomnav a.on .ic { filter:none; transform:scale(1.12); }
 
 /* ── 히어로 (그라데이션 카드) ── */
 .page-head { background:linear-gradient(120deg,#DCE9FF 0%,#E9EDFF 55%,#F7F1FF 100%);
@@ -126,7 +138,7 @@ h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-siz
 
 /* ── 모바일 보정 ── */
 @media (max-width: 640px) {
-  .block-container { padding:.8rem .9rem 2rem !important; }
+  .block-container { padding:.6rem .9rem 6.5rem !important; }
   .tabbar { gap:5px; padding:2px 0 12px; }
   .tabbar a { padding:7px 14px; font-size:.85rem; }
   .page-head { flex-direction:column; align-items:stretch; gap:10px; padding:18px 18px;
@@ -186,11 +198,22 @@ def _chr_html(mood: str, small: bool = False) -> str:
 
 
 def tabbar(active: str):
+    """상단: 인카 브랜드 헤더 / 하단: 고정 앱 내비게이션."""
+    logo = Path(__file__).parent / "assets" / "incar_logo.png"
+    if logo.exists():
+        mark = f'<img src="data:image/png;base64,{_img_b64(str(logo))}" alt="인카금융서비스">'
+    else:
+        mark = '<span class="logo-txt">iNCAR</span>'
+    st.markdown(
+        f'<div class="brand">{mark}<div><div class="sl">인생의 카운슬러</div>'
+        f'<div class="nm">인카금융서비스(주) · 수수료 내비게이터</div></div></div>',
+        unsafe_allow_html=True)
     links = []
-    for key, label, url, _color in PAGES:
+    for key, label, url, icon in PAGES:
         cls = "on" if key == active else ""
-        links.append(f'<a class="{cls}" href="{url}" target="_self">{label}</a>')
-    st.markdown(f'<div class="tabbar">{"".join(links)}</div>', unsafe_allow_html=True)
+        links.append(f'<a class="{cls}" href="{url}" target="_self">'
+                     f'<span class="ic">{icon}</span>{label}</a>')
+    st.markdown(f'<div class="bottomnav">{"".join(links)}</div>', unsafe_allow_html=True)
 
 
 def page_head(title: str, note: str, mood: str = "hello", say: str = ""):
