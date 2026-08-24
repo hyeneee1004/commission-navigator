@@ -121,14 +121,14 @@ with right:
         alt.Chart(df)
         .mark_bar(height=30, cornerRadiusEnd=6)
         .encode(
-            x=alt.X("첫해 수령액:Q", title=None, axis=alt.Axis(gridColor="#E8EDF4")),
+            x=alt.X("첫해 수령액:Q", title=None, axis=alt.Axis(gridColor="#EDF1FA")),
             y=alt.Y("구분:N", sort=None, title=None,
-                    axis=alt.Axis(labelFontSize=13.5, labelFontWeight=700, labelColor="#152238")),
-            color=alt.condition(alt.datum.구분 == "현행", alt.value("#2456A6"), alt.value("#A9C4EE")),
+                    axis=alt.Axis(labelFontSize=13.5, labelFontWeight=700, labelColor="#26324A")),
+            color=alt.condition(alt.datum.구분 == "현행", alt.value("#3D6BFF"), alt.value("#C5D4FF")),
             tooltip=["구분", alt.Tooltip("첫해 수령액:Q", format=",.1f")],
         ).properties(height=200)
     )
-    text = chart.mark_text(align="left", dx=6, fontSize=14, fontWeight=800, color="#152238").encode(
+    text = chart.mark_text(align="left", dx=6, fontSize=14, fontWeight=800, color="#26324A").encode(
         text=alt.Text("첫해 수령액:Q", format=",.0f"))
     st.altair_chart((chart + text).properties(background="#FFFFFF"), use_container_width=True)
 

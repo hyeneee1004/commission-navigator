@@ -43,40 +43,40 @@ MILES = [
 ]
 d_next = next(((m[0] - today).days, m[1]) for m in MILES if m[0] > today)
 st.markdown(f"### ② 지금 어디까지 왔나 — 다음 변화 「{d_next[1]}」까지 "
-            f"<span style='color:#CE3B3B;font-size:1.4rem'>D-{d_next[0]}</span>",
+            f"<span style='color:#FF5D5D;font-size:1.4rem'>D-{d_next[0]}</span>",
             unsafe_allow_html=True)
 
 nodes = ""
 for md, title, sub in MILES:
     p = max(0.0, min(100.0, (md - TL_START).days / (TL_END - TL_START).days * 100))
     passed = md <= today
-    dot = ("background:#17A673;border:3px solid #17A673;color:#fff;" if passed
-           else "background:#FFFFFF;border:3px solid #2456A6;color:#2456A6;")
-    badge = ('<span style="color:#17A673;font-weight:800;font-size:.85rem">✓ 시행 중</span>' if passed
-             else f'<span style="color:#CE3B3B;font-weight:800;font-size:.85rem">D-{(md - today).days}</span>')
+    dot = ("background:#2BC48A;border:3px solid #2BC48A;color:#fff;" if passed
+           else "background:#FFFFFF;border:3px solid #3D6BFF;color:#3D6BFF;")
+    badge = ('<span style="color:#2BC48A;font-weight:800;font-size:.85rem">✓ 시행 중</span>' if passed
+             else f'<span style="color:#FF5D5D;font-weight:800;font-size:.85rem">D-{(md - today).days}</span>')
     nodes += (
         f'<div style="position:absolute;left:{p}%;top:26px;transform:translateX(-50%);text-align:center;width:150px">'
         f'<div style="width:22px;height:22px;border-radius:50%;{dot}margin:0 auto;'
         f'display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800">'
         f'{"✓" if passed else ""}</div>'
-        f'<div style="font-size:1.05rem;font-weight:800;color:#152238;margin-top:8px">{md.year % 100}.{md.month}</div>'
-        f'<div style="font-size:.9rem;font-weight:700;color:#3D4C66">{title}</div>'
-        f'<div style="font-size:.8rem;color:#7183A0">{sub}</div>{badge}</div>')
+        f'<div style="font-size:1.05rem;font-weight:800;color:#26324A;margin-top:8px">{md.year % 100}.{md.month}</div>'
+        f'<div style="font-size:.9rem;font-weight:700;color:#3A4560">{title}</div>'
+        f'<div style="font-size:.8rem;color:#9AA5B8">{sub}</div>{badge}</div>')
 
 st.markdown(f"""
 <div style="position:relative;height:170px;margin:26px 48px 6px">
-  <div style="position:absolute;top:34px;left:0;right:0;height:8px;background:#E3E9F1;border-radius:4px"></div>
+  <div style="position:absolute;top:34px;left:0;right:0;height:8px;background:#EEF2FA;border-radius:4px"></div>
   <div style="position:absolute;top:34px;left:0;width:{pct}%;height:8px;
-       background:linear-gradient(90deg,#17A673,#2456A6);border-radius:4px"></div>
+       background:linear-gradient(90deg,#2BC48A,#3D6BFF);border-radius:4px"></div>
   <div style="position:absolute;left:{pct}%;top:-8px;transform:translateX(-50%);text-align:center;z-index:2">
-    <div style="background:#C08A00;color:#fff;font-weight:800;font-size:.82rem;
+    <div style="background:#E39A00;color:#fff;font-weight:800;font-size:.82rem;
          border-radius:99px;padding:2px 12px;white-space:nowrap">📍 오늘 {today.year % 100}.{today.month}.{today.day}</div>
-    <div style="width:3px;height:30px;background:#C08A00;margin:2px auto 0"></div>
+    <div style="width:3px;height:30px;background:#E39A00;margin:2px auto 0"></div>
   </div>
   {nodes}
 </div>
-<div style="text-align:center;color:#4A6FA5;font-weight:700;font-size:.95rem;margin-bottom:4px">
-  개편 여정의 <span style="color:#C08A00;font-size:1.15rem;font-weight:800">{pct:.0f}%</span> 지점을 지나고 있어요
+<div style="text-align:center;color:#6E7A94;font-weight:700;font-size:.95rem;margin-bottom:4px">
+  개편 여정의 <span style="color:#E39A00;font-size:1.15rem;font-weight:800">{pct:.0f}%</span> 지점을 지나고 있어요
 </div>
 """, unsafe_allow_html=True)
 
@@ -108,11 +108,11 @@ def show_matrix():
 
     def _color(v):
         if v in ("포함", "합산"):
-            return "background-color:#FBE9E9;color:#CE3B3B;font-weight:800"
+            return "background-color:#FFF0F0;color:#FF5D5D;font-weight:800"
         if v in ("제외", "예외"):
-            return "background-color:#E2F6EE;color:#17A673;font-weight:800"
+            return "background-color:#EAFBF4;color:#2BC48A;font-weight:800"
         if v == "조건부":
-            return "background-color:#FCF2D4;color:#C08A00;font-weight:800"
+            return "background-color:#FFF7E6;color:#E39A00;font-weight:800"
         return ""
 
     st.dataframe(COST_MATRIX.style.map(_color, subset=["수수료등", "1,200%", "차익거래"]),

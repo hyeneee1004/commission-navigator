@@ -126,14 +126,14 @@ with right:
     i1, i2 = st.columns([1.15, 1], gap="medium")
     with i1:
         st.markdown(
-            f"""<div style="border:1.5px solid #DFE6EF;border-radius:14px;padding:14px 18px;font-size:.95rem">
+            f"""<div style="border:1.5px solid #E6ECF7;border-radius:14px;padding:14px 18px;font-size:.95rem">
             <b>② 계약사항</b><br>
             <table style="width:100%;margin-top:6px;border-collapse:collapse">
-            <tr><td style="color:#5E6C84;padding:3px 0;width:32%">상품명</td><td>{prod_label if mode=='상품 선택' else '직접 입력'}</td></tr>
-            <tr><td style="color:#5E6C84;padding:3px 0">보험사 / 종구분</td><td>{comp} / {kind}</td></tr>
-            <tr><td style="color:#5E6C84;padding:3px 0">계약일자</td><td>{start.strftime('%Y-%m-%d')}{' · ' + policy_no if policy_no else ''}</td></tr>
-            <tr><td style="color:#5E6C84;padding:3px 0">경과차월</td><td><b style="color:#2456A6">{elapsed}차월</b> (자동)</td></tr>
-            <tr><td style="color:#5E6C84;padding:3px 0">기납입보험료</td><td>{paid_now:,.0f}만원 (자동)</td></tr>
+            <tr><td style="color:#6E7A94;padding:3px 0;width:32%">상품명</td><td>{prod_label if mode=='상품 선택' else '직접 입력'}</td></tr>
+            <tr><td style="color:#6E7A94;padding:3px 0">보험사 / 종구분</td><td>{comp} / {kind}</td></tr>
+            <tr><td style="color:#6E7A94;padding:3px 0">계약일자</td><td>{start.strftime('%Y-%m-%d')}{' · ' + policy_no if policy_no else ''}</td></tr>
+            <tr><td style="color:#6E7A94;padding:3px 0">경과차월</td><td><b style="color:#3D6BFF">{elapsed}차월</b> (자동)</td></tr>
+            <tr><td style="color:#6E7A94;padding:3px 0">기납입보험료</td><td>{paid_now:,.0f}만원 (자동)</td></tr>
             </table></div>""", unsafe_allow_html=True)
     with i2:
         ui.stat("pc-sky", f"{cv_now / paid_now * 100 if paid_now else 0:,.1f}%",
@@ -177,22 +177,22 @@ with right:
                                      "설계사측수취": "수수료 + 해약환급금"})
     base = alt.Chart(plot).encode(x=alt.X("차월:Q", title="경과 차월",
                                           scale=alt.Scale(domain=[1, 36]),
-                                          axis=alt.Axis(gridColor="#E8EDF4")))
+                                          axis=alt.Axis(gridColor="#EDF1FA")))
     lines = base.mark_line(strokeWidth=3).encode(
-        y=alt.Y("금액:Q", title="금액 (만원)", axis=alt.Axis(gridColor="#E8EDF4")),
+        y=alt.Y("금액:Q", title="금액 (만원)", axis=alt.Axis(gridColor="#EDF1FA")),
         color=alt.Color("구분:N", title=None,
                         scale=alt.Scale(domain=["고객이 낸 보험료", "수수료 + 해약환급금"],
-                                        range=["#8A99AF", "#2456A6"]),
+                                        range=["#9AA5B8", "#3D6BFF"]),
                         legend=alt.Legend(orient="bottom", labelFontSize=13.5, labelFontWeight=700)),
         strokeDash=alt.condition(alt.datum.구분 == "고객이 낸 보험료",
                                  alt.value([6, 4]), alt.value([0])),
         tooltip=["차월", "구분", alt.Tooltip("금액:Q", format=",.1f")],
     )
-    shade = (alt.Chart(df[df["위험"]]).mark_rect(color="#CE3B3B", opacity=0.14)
+    shade = (alt.Chart(df[df["위험"]]).mark_rect(color="#FF5D5D", opacity=0.14)
              .encode(x=alt.X("차월:Q"), x2=alt.X2("차월2:Q"))
              .transform_calculate(차월2="datum.차월 + 1"))
     now_rule = (alt.Chart(pd.DataFrame({"차월": [m_now]}))
-                .mark_rule(color="#17A673", strokeWidth=2, strokeDash=[3, 3])
+                .mark_rule(color="#2BC48A", strokeWidth=2, strokeDash=[3, 3])
                 .encode(x="차월:Q"))
     st.altair_chart((shade + lines + now_rule).properties(height=280, background="#FFFFFF"),
                     use_container_width=True)
