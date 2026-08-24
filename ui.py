@@ -86,10 +86,10 @@ h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-siz
 
 /* ── 마스코트 + 말풍선 ── */
 .chr-row { display:flex; align-items:center; gap:18px; margin:12px 0 8px; }
-.chr { flex:0 0 auto; width:200px; height:200px; border-radius:28px;
-  display:flex; align-items:center; justify-content:center; font-size:5.5rem;
+.chr { flex:0 0 auto; width:300px; height:300px; border-radius:32px;
+  display:flex; align-items:center; justify-content:center; font-size:8rem;
   background:#FFFFFF; box-shadow:0 6px 18px rgba(61,107,255,.08); }
-.chr.small { width:120px; height:120px; font-size:3.2rem; border-radius:22px;
+.chr.small { width:180px; height:180px; font-size:4.8rem; border-radius:26px;
   background:transparent; box-shadow:none; }
 .chr img { width:100%; height:100%; object-fit:contain; }
 .chr.real { background:transparent; box-shadow:none; }
@@ -145,8 +145,8 @@ h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-siz
     border-radius:20px; }
   .page-head .t { font-size:1.35rem; }
   .page-head .n { font-size:.9rem; }
-  .chr { width:104px; height:104px; font-size:3rem; }
-  .chr.small { width:62px; height:62px; font-size:1.9rem; }
+  .chr { width:150px; height:150px; font-size:4.2rem; }
+  .chr.small { width:92px; height:92px; font-size:2.6rem; }
   .chr-row { gap:10px; }
   .bubble { padding:12px 14px; font-size:.95rem; }
   .bubble .big { font-size:1.15rem; }
