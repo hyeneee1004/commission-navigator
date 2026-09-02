@@ -91,9 +91,11 @@ h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-siz
   background:#FFFFFF; box-shadow:0 6px 18px rgba(61,107,255,.08); }
 .chr.small { width:180px; height:180px; font-size:4.8rem; border-radius:26px;
   background:transparent; box-shadow:none; }
+.chr.hero { width:130px !important; height:130px !important; font-size:3rem; }
 .chr img { width:100%; height:100%; object-fit:contain; }
 .chr.real { background:transparent; box-shadow:none; }
 .bubble { position:relative; background:var(--bb,#FFFFFF); border-radius:20px;
+  min-width:220px;
   padding:18px 24px; font-size:1.05rem; line-height:1.65; font-weight:600; color:#26324A;
   flex:1; box-shadow:0 6px 18px rgba(61,107,255,.08); }
 .bubble::before { content:""; position:absolute; left:-11px; top:50%; transform:translateY(-50%);
@@ -147,6 +149,7 @@ h3 { color:#26324A; letter-spacing:-0.01em; font-weight:800 !important; font-siz
   .page-head .n { font-size:.9rem; }
   .chr { width:150px; height:150px; font-size:4.2rem; }
   .chr.small { width:92px; height:92px; font-size:2.6rem; }
+  .chr.hero { width:76px !important; height:76px !important; }
   .chr-row { gap:10px; }
   .bubble { padding:12px 14px; font-size:.95rem; }
   .bubble .big { font-size:1.15rem; }
@@ -221,7 +224,8 @@ def page_head(title: str, note: str, mood: str = "hello", say: str = ""):
         note += ' <span style="background:#FFF7E6;color:#E39A00;border-radius:999px;padding:2px 12px;font-weight:800;font-size:.82rem">공개판 · 예시값 기준</span>'
     bubble = ""
     if say:
-        bubble = (f'<div class="chr-row" style="max-width:500px;margin:0">{_chr_html(mood, small=True)}'
+        hero_chr = _chr_html(mood, small=True).replace('chr small', 'chr small hero')
+        bubble = (f'<div class="chr-row" style="max-width:560px;margin:0">{hero_chr}'
                   f'<div class="bubble bb-blue" style="font-size:.97rem;padding:13px 17px">{say}</div></div>')
     st.markdown(
         f'<div class="page-head"><div><p class="t">{title}</p><p class="n">{note}</p></div>{bubble}</div>',
