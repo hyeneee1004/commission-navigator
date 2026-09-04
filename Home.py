@@ -101,7 +101,29 @@ with g3:
         st.switch_page("pages/1_규제_검색.py")
 
 
-# ── ④ 판정표 ──
+# ── ④ 개편 최근 뉴스 ──
+st.write("")
+st.markdown("### ④ 개편 소식, 뉴스로 확인하세요")
+import news_store
+
+news = news_store.fetch_news(8)
+if news:
+    nc1, nc2 = st.columns(2, gap="medium")
+    for i, a in enumerate(news):
+        with (nc1 if i % 2 == 0 else nc2):
+            st.markdown(
+                f'''<a href="{a["link"]}" target="_blank" style="text-decoration:none">
+                <div style="background:#FFFFFF;border-radius:16px;padding:14px 18px;margin-bottom:10px;
+                     box-shadow:0 4px 12px rgba(61,107,255,.07)">
+                <div style="font-size:.95rem;font-weight:700;color:#26324A;line-height:1.45">{a["title"]}</div>
+                <div style="font-size:.8rem;color:#9AA5B8;font-weight:600;margin-top:5px">
+                {a["source"]} · {a["date"].strftime("%m월 %d일")}</div></div></a>''',
+                unsafe_allow_html=True)
+    st.caption("출처: 구글 뉴스 검색(판매수수료 개편·1,200% 룰·분급·차익거래) · 30분마다 자동 갱신 · 제목을 누르면 기사로 이동")
+else:
+    st.caption("뉴스를 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.")
+
+# ── ⑤ 판정표 ──
 @st.dialog("비용 분류 판정표 — 뭐가 포함되고 뭐가 빠지나", width="large")
 def show_matrix():
     st.caption("출처: GA비용분류 및 처리기준. '포함'이면 1,200% 한도에 합산되는 비용입니다.")
