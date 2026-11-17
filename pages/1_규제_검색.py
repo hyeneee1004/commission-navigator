@@ -68,7 +68,28 @@ if ql:
                 st.markdown(f"**📄 {h['file']}** · {h['loc']}")
                 st.markdown(f"…{h['snippet']}…")
 
-with st.expander(f"④ 📁 자료함 — 참고자료 관리 — 현재 {len(doc_store.doc_files())}개 파일 로딩됨"):
+    # ── 뉴스에서 찾기 — 저장된 규정·자료에 없는 용어도 최신 기사에서 발췌 ──
+    import news_store
+
+    with st.spinner("📰 뉴스에서도 찾는 중…"):
+        news_hits = news_store.news_excerpts(q)
+    if news_hits:
+        st.markdown(f"### ④ 뉴스에서 찾기 <small>({len(news_hits)}건)</small>",
+                    unsafe_allow_html=True)
+        st.caption("뉴스 검색(Bing) 결과 기사 본문에서 발췌한 인용입니다 — 기사 내용은 언론사 견해이며, "
+                   "규정 해석은 감독규정 원문·회사 기준이 우선합니다.")
+        for h in news_hits:
+            with st.container(border=True):
+                st.markdown(f"**📰 [{h['title']}]({h['url']})** · "
+                            f"{h['source']} · {h['date'].strftime('%Y.%m.%d')}")
+                for sn in h["snippets"]:
+                    st.markdown(f"> {sn}")
+                if not h["snippets"]:
+                    st.caption("본문을 불러오지 못했어요 — 제목이 일치해 표시합니다. 제목을 눌러 기사에서 확인하세요.")
+    elif not doc_hits and not hits:
+        st.caption("📰 뉴스에서도 관련 기사를 찾지 못했어요.")
+
+with st.expander(f"⑤ 📁 자료함 — 참고자료 관리 — 현재 {len(doc_store.doc_files())}개 파일 로딩됨"):
     doc_store.uploader_block(st, doc_store.DOC_DIR,
                              "새 참고자료(PDF·PPTX·XLSX·TXT)를 올리면 저장 후 바로 검색에 포함됩니다",
                              ["pdf", "pptx", "xlsx", "xlsm", "txt", "md"], "up_docs")
