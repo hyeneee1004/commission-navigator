@@ -120,8 +120,9 @@ def news_excerpts(query: str, limit: int = 3):
     query = query.strip()
     if not query:
         return []
-    try:
-        arts = _bing_search(query)[:6]
+    try:        # 보험 문맥 우선(동음이의 뉴스 배제), 0건이면 원검색어로 재시도
+        q_eff = query if "보험" in query else f"보험 {query}"
+        arts = _bing_search(q_eff)[:6] or (_bing_search(query)[:6] if q_eff != query else [])
     except Exception:
         arts = []
     hits = []
